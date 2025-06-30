@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrarse - PlanifyMe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo PlanifyMe" class="logo">
+        <h2>Crea una cuenta</h2>
+        <form method="POST" action="{{ url_for('routes.register') }}">
+            <input type="text" name="name" placeholder="Nombre completo" required>
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Registrarse</button>
+        </form>
+        <a class="register-link" href="{{ url_for('routes.login') }}">¿Ya tienes cuenta? Inicia sesión</a>
+    </div>
+</body>
+</html>

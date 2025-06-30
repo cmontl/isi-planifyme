@@ -1,0 +1,6 @@
+venv/
+<<<<<<< HEAD
+=======
+*.sqlite3
+*.log
+>>>>>>> 20a5cbc (Subida del Sprint 3)
