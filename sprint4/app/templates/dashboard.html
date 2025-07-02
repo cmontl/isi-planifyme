@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel - PlanifyMe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-light">
+
+<!-- Navbar superior -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid justify-content-between">
+        <span class="navbar-brand fw-bold">PlanifyMe</span>
+        <div class="d-flex">
+            <a href="{{ url_for('routes.dashboard') }}" class="btn btn-outline-light me-2">Inicio</a>
+            <a href="{{ url_for('routes.logout') }}" class="btn btn-light">Cerrar sesión</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Panel lateral de usuario -->
+        <div class="col-md-3 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">👤 Tu Perfil</div>
+                <div class="card-body">
+                    <p><strong>Nombre:</strong> {{ name }}</p>
+                    <p><strong>Tareas totales:</strong> {{ tasks|length }}</p>
+                    <p><strong>Ciudad:</strong> Madrid</p>
+                    <p class="text-muted">Panel de control de usuario con datos personalizados.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección principal -->
+        <div class="col-md-9">
+            <div class="row">
+                <!-- Clima -->
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow">
+                        <div class="card-header bg-info text-white">🌤️ Clima</div>
+                        <div class="card-body">
+                            {% if weather %}
+                                <p><strong>Ciudad:</strong> {{ weather.ciudad }}</p>
+                                <p><strong>Temperatura:</strong> {{ weather.temperatura }} °C</p>
+                                <p><strong>Estado:</strong> {{ weather.estado }}</p>
+                            {% else %}
+                                <p>No se pudo obtener el clima.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Películas -->
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow">
+                        <div class="card-header bg-warning text-white">🎬 Películas</div>
+                        <div class="card-body">
+                            {% if movies %}
+                                <ul class="list-group">
+                                    {% for movie in movies %}
+                                        <li class="list-group-item">
+                                            <strong>{{ movie.titulo }}</strong><br>
+                                            {{ movie.fecha_estreno }} – {{ movie.puntuacion }}/10
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No se pudieron obtener películas.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eventos -->
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow">
+                        <div class="card-header bg-success text-white">🎟️ Eventos</div>
+                        <div class="card-body">
+                            {% if events %}
+                                <ul class="list-group">
+                                    {% for event in events %}
+                                        <li class="list-group-item">
+                                            <strong>{{ event.name }}</strong><br>
+                                            {{ event.date }} – {{ event.city }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No se pudieron obtener eventos.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tareas -->
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">📝 Tus Tareas</div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('routes.tasks') }}" class="mb-3 d-flex gap-2">
+                        <input type="text" name="title" class="form-control" placeholder="Título..." required>
+                        <input type="text" name="description" class="form-control" placeholder="Descripción de la tarea..." required>
+                        <button type="submit" class="btn btn-success">Añadir</button>
+                    </form>
+
+                    {% if tasks %}
+                        <ul class="list-group">
+                            {% for task in tasks %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ task.title }}</strong><br>
+                                        {{ task.description }}
+                                    </div>
+                                    <div class="btn-group">
+                                        <form action="{{ url_for('routes.delete_task', task_id=task.id) }}" method="POST">
+                                            <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                        </form>
+                                        {% if not task.completed %}
+                                            <form action="{{ url_for('routes.mark_done', task_id=task.id) }}" method="POST">
+                                                <button class="btn btn-sm btn-outline-success">Completar</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="badge bg-success ms-2">✅ Completada</span>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No tienes tareas todavía.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
